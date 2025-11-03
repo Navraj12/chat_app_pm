@@ -1,89 +1,91 @@
-import React, { useEffect, useState } from 'react';
-import { io, Socket } from 'socket.io-client';
-import { useAuth } from '../context/AuthContext';
-import type { Message, ChatStats } from '../types';
-import { chatAPI } from '../services/api';
-import MessageList from './MessageList';
-import MessageInput from './MessageInput';
+import React, { useEffect, useState, useRef } from "react";
+import { io, Socket } from "socket.io-client";
+import { useAuth } from "../context/AuthContext";
+import { chatAPI } from "../services/api";
+import type { ChatStats, Message } from "../types";
+import MessageInput from "./MessageInput";
+import MessageList from "./MessageList";
 
-const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000';
+const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || "http://localhost:5000";
 
 const Chat: React.FC = () => {
   const { user, token, logout } = useAuth();
-  const [socket, setSocket] = useState<Socket | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [userCount, setUserCount] = useState(0);
   const [stats, setStats] = useState<ChatStats | null>(null);
   const [isConnected, setIsConnected] = useState(false);
 
+  // Use useRef for the socket to ensure a single connection
+  const socketRef = useRef<Socket | null>(null);
+
+  // Fetch initial messages and stats
   useEffect(() => {
-    // Fetch initial messages and stats
     const fetchInitialData = async () => {
       try {
         const [messagesData, statsData] = await Promise.all([
           chatAPI.getMessages(),
-          chatAPI.getStats()
+          chatAPI.getStats(),
         ]);
         setMessages(messagesData.messages);
         setStats(statsData);
       } catch (error) {
-        console.error('Error fetching initial data:', error);
+        console.error("Error fetching initial data:", error);
       }
     };
 
     fetchInitialData();
   }, []);
 
+  // Initialize socket connection
   useEffect(() => {
-    if (!token) return;
+    if (!token || socketRef.current) return; // prevent multiple connections
 
-    // Connect to socket
-    const newSocket = io(SOCKET_URL, {
-      auth: { token }
+    const socket = io(SOCKET_URL, {
+      auth: { token },
     });
 
-    newSocket.on('connect', () => {
-      console.log('Connected to socket');
+    socket.on("connect", () => {
+      console.log("Connected to socket");
       setIsConnected(true);
-      newSocket.emit('join', { username: user?.username });
+      socket.emit("join", { username: user?.username });
     });
 
-    newSocket.on('disconnect', () => {
-      console.log('Disconnected from socket');
+    socket.on("disconnect", () => {
+      console.log("Disconnected from socket");
       setIsConnected(false);
     });
 
-    newSocket.on('message', (message: Message) => {
+    socket.on("message", (message: Message) => {
       setMessages((prev) => [...prev, message]);
-      setStats((prev) => prev ? { ...prev, totalMessages: prev.totalMessages + 1 } : null);
+      setStats((prev) =>
+        prev ? { ...prev, totalMessages: prev.totalMessages + 1 } : null
+      );
     });
 
-    newSocket.on('user_joined', (data) => {
-      console.log('User joined:', data.username);
+    socket.on("user_joined", (data) => {
+      console.log("User joined:", data.username);
     });
 
-    newSocket.on('user_left', (data) => {
-      console.log('User left:', data.username);
+    socket.on("user_left", (data) => {
+      console.log("User left:", data.username);
     });
 
-    newSocket.on('user_count', (data) => {
-      setUserCount(data.count);
-    });
+    socket.on("user_count", (data) => setUserCount(data.count));
 
-    newSocket.on('error', (error) => {
-      console.error('Socket error:', error);
-    });
+    socket.on("error", (error) => console.error("Socket error:", error));
 
-    setSocket(newSocket);
+    socketRef.current = socket;
 
+    // Cleanup on unmount
     return () => {
-      newSocket.close();
+      socket.disconnect();
     };
-  }, [token, user]);
+  }, [token]); // only depend on token, not user
 
+  // Send message to server
   const handleSendMessage = (message: string) => {
-    if (socket && isConnected) {
-      socket.emit('message', { message });
+    if (socketRef.current && isConnected) {
+      socketRef.current.emit("message", { message });
     }
   };
 
@@ -94,15 +96,17 @@ const Chat: React.FC = () => {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold">Chat Application</h1>
-            <p className="text-sm text-blue-200">
-              Welcome, {user?.username}
-            </p>
+            <p className="text-sm text-blue-200">Welcome, {user?.username}</p>
           </div>
           <div className="flex items-center gap-6">
             <div className="text-sm">
               <div className="flex items-center gap-2">
-                <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-400' : 'bg-red-400'}`} />
-                <span>{isConnected ? 'Connected' : 'Disconnected'}</span>
+                <div
+                  className={`w-2 h-2 rounded-full ${
+                    isConnected ? "bg-green-400" : "bg-red-400"
+                  }`}
+                />
+                <span>{isConnected ? "Connected" : "Disconnected"}</span>
               </div>
               <div className="mt-1">Online: {userCount}</div>
             </div>

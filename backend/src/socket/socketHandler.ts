@@ -85,7 +85,7 @@ export const initializeSocket = (io: Server) => {
           id: newMessage._id,
           username: newMessage.username,
           userId: newMessage.userId,
-          content: newMessage.content,
+          message: newMessage.message,
           timestamp: newMessage.timestamp,
         });
 
