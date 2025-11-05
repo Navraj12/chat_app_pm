@@ -10,7 +10,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check for stored token on mount
     const storedToken = localStorage.getItem('token');
     const storedUser = localStorage.getItem('user');
     

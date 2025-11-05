@@ -13,7 +13,7 @@ interface UserSocket extends Socket {
 const activeUsers = new Map<string, { socketId: string; username: string }>();
 
 export const initializeSocket = (io: Server) => {
-  // Authentication middleware
+ 
   io.use((socket: UserSocket, next) => {
     try {
       const token = socket.handshake.auth.token;
@@ -38,7 +38,7 @@ export const initializeSocket = (io: Server) => {
   io.on("connection", (socket: UserSocket) => {
     console.log("User connected:", socket.user?.username);
 
-    // Handle user join
+    
     socket.on("join", (data) => {
       if (socket.user) {
         activeUsers.set(socket.user.id, {
@@ -46,14 +46,14 @@ export const initializeSocket = (io: Server) => {
           username: socket.user.username,
         });
 
-        // Notify all clients about new user
+        
         io.emit("user_joined", {
           username: socket.user.username,
           userId: socket.user.id,
           timestamp: new Date(),
         });
 
-        // Send updated user count
+       
         io.emit("user_count", {
           count: activeUsers.size,
         });
@@ -62,7 +62,7 @@ export const initializeSocket = (io: Server) => {
       }
     });
 
-    // Handle messages
+    
     socket.on("message", async (data) => {
       try {
         if (!socket.user) return;
@@ -73,14 +73,14 @@ export const initializeSocket = (io: Server) => {
           return;
         }
 
-        // Save message to database
+        
         const newMessage = await Message.create({
           username: socket.user.username,
           userId: socket.user.id,
           message: message.trim(),
         });
 
-        // Emit message to all clients
+        
         io.emit("message", {
           id: newMessage._id,
           username: newMessage.username,
@@ -96,7 +96,7 @@ export const initializeSocket = (io: Server) => {
       }
     });
 
-    // Handle disconnect
+    
     socket.on("disconnect", () => {
       if (socket.user) {
         activeUsers.delete(socket.user.id);

@@ -4,7 +4,6 @@ import { getAllUsers, getUserById, updateUser, deleteUser } from '../controllers
 
 const userRouter = Router();
 
-// All user routes are protected
 userRouter.use(authenticate);
 
 userRouter.get('/', getAllUsers);

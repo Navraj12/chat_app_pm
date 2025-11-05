@@ -4,7 +4,6 @@ import { getMessages, getChatStats } from '../controllers/chatController';
 
 const chatRouter = Router();
 
-// All chat routes are protected
 chatRouter.use(authenticate);
 
 chatRouter.get('/messages', getMessages);

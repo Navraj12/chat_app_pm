@@ -25,7 +25,7 @@ export const getChatStats = async (req: AuthRequest, res: Response) => {
     const totalMessages = await Message.countDocuments();
     const totalUsers = await User.countDocuments();
     
-    // Get recent activity (last 24 hours)
+   
     const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
     const recentMessages = await Message.countDocuments({
       timestamp: { $gte: oneDayAgo }

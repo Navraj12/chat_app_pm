@@ -20,7 +20,7 @@ const io = new Server(server, {
   }
 });
 
-// Middleware
+
 app.use(cors({
   origin: process.env.FRONTEND_URL || 'http://localhost:5173',
   credentials: true
@@ -28,20 +28,16 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Database connection
 connectDB();
 
-// Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/chat', chatRoutes);
 
-// Health check
 app.get('/health', (req, res) => {
   res.json({ status: 'OK', message: 'Server is running' });
 });
 
-// Initialize Socket.IO
 initializeSocket(io);
 
 const PORT = process.env.PORT || 5000;

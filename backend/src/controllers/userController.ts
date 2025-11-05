@@ -33,7 +33,7 @@ export const updateUser = async (req: AuthRequest, res: Response) => {
     const { username, email } = req.body;
     const userId = req.params.id;
 
-    // Check if user is updating their own profile
+    
     if (req.user?.id !== userId) {
       return res.status(403).json({ message: 'You can only update your own profile' });
     }
@@ -65,7 +65,7 @@ export const deleteUser = async (req: AuthRequest, res: Response) => {
   try {
     const userId = req.params.id;
 
-    // Check if user is deleting their own profile
+   
     if (req.user?.id !== userId) {
       return res.status(403).json({ message: 'You can only delete your own profile' });
     }

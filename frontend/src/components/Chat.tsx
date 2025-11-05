@@ -15,10 +15,8 @@ const Chat: React.FC = () => {
   const [stats, setStats] = useState<ChatStats | null>(null);
   const [isConnected, setIsConnected] = useState(false);
 
-  // Use useRef for the socket to ensure a single connection
   const socketRef = useRef<Socket | null>(null);
 
-  // Fetch initial messages and stats
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
@@ -36,10 +34,8 @@ const Chat: React.FC = () => {
     fetchInitialData();
   }, []);
 
-  // Initialize socket connection
   useEffect(() => {
-    if (!token || socketRef.current) return; // prevent multiple connections
-
+    if (!token || socketRef.current) return;
     const socket = io(SOCKET_URL, {
       auth: { token },
     });
@@ -76,13 +72,10 @@ const Chat: React.FC = () => {
 
     socketRef.current = socket;
 
-    // Cleanup on unmount
     return () => {
       socket.disconnect();
     };
-  }, [token]); // only depend on token, not user
-
-  // Send message to server
+  }, [token]); 
   const handleSendMessage = (message: string) => {
     if (socketRef.current && isConnected) {
       socketRef.current.emit("message", { message });
@@ -91,7 +84,6 @@ const Chat: React.FC = () => {
 
   return (
     <div className="flex flex-col h-screen bg-gray-100">
-      {/* Header */}
       <div className="bg-blue-600 text-white p-4 shadow-lg">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div>
@@ -126,7 +118,6 @@ const Chat: React.FC = () => {
         </div>
       </div>
 
-      {/* Chat Container */}
       <div className="flex-1 flex flex-col max-w-7xl w-full mx-auto bg-white shadow-xl">
         <MessageList messages={messages} />
         <MessageInput onSendMessage={handleSendMessage} />
