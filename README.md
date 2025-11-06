@@ -43,11 +43,11 @@ A full-stack real-time chat application built with Node.js, Express, MongoDB, So
 
 ##  Project Structure
 
-<div className = " flex-verticle">
-|<img width="283" height="754" alt="{C712F381-5CFB-4339-8D41-2D57925F9828}" src="https://github.com/user-attachments/assets/fcecf375-eba6-49dc-8c58-3e27e0bc5a1a"  width="283"/> 
-|
+<div style="display: flex; gap: 20px; justify-content: center;">
+<img width="283" height="754" alt="{C712F381-5CFB-4339-8D41-2D57925F9828}" src="https://github.com/user-attachments/assets/fcecf375-eba6-49dc-8c58-3e27e0bc5a1a"  width="283"/> 
+
 <img width="282" height="873" alt="{EF03DD3A-84FD-466A-B486-FD4DB0BE25CE}" src="https://github.com/user-attachments/assets/3495b1b2-74dc-4ea5-8a55-975aba93733c"  width="283"/>
-|
+
 </div>
 
 ##  Getting Started
@@ -180,6 +180,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 For support, please open an issue in the repository.
 
 ---
+
 
 
 
