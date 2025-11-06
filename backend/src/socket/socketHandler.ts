@@ -53,7 +53,7 @@ export const initializeSocket = (io: Server) => {
           timestamp: new Date(),
         });
 
-       
+      
         io.emit("user_count", {
           count: activeUsers.size,
         });

@@ -65,7 +65,7 @@ export const deleteUser = async (req: AuthRequest, res: Response) => {
   try {
     const userId = req.params.id;
 
-   
+  
     if (req.user?.id !== userId) {
       return res.status(403).json({ message: 'You can only delete your own profile' });
     }
