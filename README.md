@@ -43,10 +43,11 @@ A full-stack real-time chat application built with Node.js, Express, MongoDB, So
 
 ##  Project Structure
 
-```
+<div style="display: flex; gap: 20px; justify-content: center;">
+  <img src="https://github.com/user-attachments/assets/fcecf375-eba6-49dc-8c58-3e27e0bc5a1a" width="283" height="754" alt="Chat Screenshot 1" />
+  <img src="https://github.com/user-attachments/assets/3495b1b2-74dc-4ea5-8a55-975aba93733c" width="282" height="873" alt="Chat Screenshot 2" />
+</div>
 
-
-```
 
 ##  Getting Started
 
@@ -178,4 +179,13 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 For support, please open an issue in the repository.
 
 ---
+
+
+
+
+
+
+
+
+
 
