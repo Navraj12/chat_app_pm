@@ -15,14 +15,24 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+    origin: "*", // More permissive for development troubleshooting
+    methods: ["GET", "POST"],
     credentials: true
   }
 });
 
 
+const allowedOrigins = [process.env.FRONTEND_URL || 'http://localhost:5173', 'http://localhost:5174', 'http://127.0.0.1:5173'];
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  origin: (origin, callback) => {
+    // allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    if (process.env.NODE_ENV === 'development' || allowedOrigins.indexOf(origin) !== -1) {
+      return callback(null, true);
+    }
+    return callback(new Error('The CORS policy for this site does not allow access from the specified Origin.'), false);
+  },
   credentials: true
 }));
 app.use(express.json());

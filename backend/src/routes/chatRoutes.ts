@@ -1,12 +1,14 @@
 import { Router } from 'express';
 import { authenticate } from '../middleware/authMiddleware';
-import { getMessages, getChatStats } from '../controllers/chatController';
+import { getMessages, getChatStats, getConversations, startConversation } from '../controllers/chatController';
 
 const chatRouter = Router();
 
 chatRouter.use(authenticate);
 
-chatRouter.get('/messages', getMessages);
+chatRouter.get('/', getConversations);
+chatRouter.post('/', startConversation);
+chatRouter.get('/messages/:conversationId', getMessages);
 chatRouter.get('/stats', getChatStats);
 
 export default chatRouter;
