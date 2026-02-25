@@ -3,7 +3,9 @@ import mongoose, { Document, Schema } from 'mongoose';
 export interface IConversation extends Document {
     participants: mongoose.Types.ObjectId[];
     type: 'private' | 'group';
+    name?: string;
     lastMessage?: {
+
         text: string;
         sender: mongoose.Types.ObjectId;
         timestamp: Date;
@@ -26,6 +28,11 @@ const ConversationSchema = new Schema<IConversation>(
             enum: ['private', 'group'],
             default: 'private',
         },
+        name: {
+            type: String,
+            trim: true,
+        },
+
         lastMessage: {
             text: String,
             sender: {

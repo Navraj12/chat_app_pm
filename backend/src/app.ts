@@ -44,6 +44,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/chat', chatRoutes);
 
+
 initializeSocket(io);
 
 const PORT = process.env.PORT || 5000;

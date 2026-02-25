@@ -31,7 +31,9 @@ const MessageList: React.FC<MessageListProps> = ({ messages, onReply, onReact })
   };
 
   return (
-    <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-[#f0f2f5]">
+    <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-surface/50">
+
+
       {messages.length === 0 ? (
         <div className="flex items-center justify-center h-full text-gray-500">
           <p>No messages yet. Start the conversation!</p>
@@ -49,25 +51,28 @@ const MessageList: React.FC<MessageListProps> = ({ messages, onReply, onReact })
                 } ${showInitial ? "mt-4" : "mt-1"}`}
             >
               {!isOwnMessage && showInitial && (
-                <span className="text-xs text-gray-500 ml-1 mb-1">
+                <span className="text-[10px] font-bold text-slate-400 ml-1 mb-1 uppercase tracking-wider">
                   {msg.username}
                 </span>
               )}
 
+
               {/* Reply Reference Area */}
               {msg.replyTo && (
-                <div className={`mb-[-8px] px-3 py-1 bg-gray-200 text-[11px] text-gray-600 rounded-t-xl opacity-80 italic max-w-[60%] truncate ${isOwnMessage ? "mr-2" : "ml-2"}`}>
-                  Replying to <span className="font-bold">{msg.replyTo.username}</span>: {msg.replyTo.text}
+                <div className={`mb-[-6px] px-3 py-1 bg-slate-200/50 text-[10px] text-slate-500 rounded-t-xl opacity-80 italic max-w-[70%] truncate ${isOwnMessage ? "mr-1" : "ml-1"}`}>
+                  Replying to <span className="font-bold text-slate-700">{msg.replyTo.username}</span>: {msg.replyTo.text}
                 </div>
               )}
 
+
               <div className={`relative flex items-center gap-2 ${isOwnMessage ? "flex-row-reverse" : ""}`}>
                 <div
-                  className={`max-w-[85%] px-4 py-2 text-sm shadow-sm transition-all ${isOwnMessage
-                    ? "bg-blue-600 text-white rounded-2xl rounded-tr-none"
-                    : "bg-white text-gray-800 rounded-2xl rounded-tl-none border border-gray-100"
+                  className={`max-w-[85%] px-4 py-2 text-[14px] shadow-sm transition-all relative ${isOwnMessage
+                    ? "bg-brand text-white rounded-2xl rounded-tr-none shadow-brand/10"
+                    : "bg-white text-slate-800 rounded-2xl rounded-tl-none border border-slate-100"
                     }`}
                 >
+
                   <p className="break-words leading-relaxed">{msg.message}</p>
 
                   {/* Reactions Display */}
@@ -79,10 +84,11 @@ const MessageList: React.FC<MessageListProps> = ({ messages, onReply, onReact })
                           return acc;
                         }, {} as Record<string, number>)
                       ).map(([emoji, count]) => (
-                        <div key={emoji} className="bg-white rounded-full shadow-sm px-1 text-[10px] flex items-center border border-gray-100">
-                          {emoji} {count > 1 && <span className="ml-0.5 font-bold">{count}</span>}
+                        <div key={emoji} className="bg-white rounded-full shadow-sm px-1.5 py-0.5 text-[10px] flex items-center border border-slate-100 animate-slide-up">
+                          {emoji} {count > 1 && <span className="ml-1 font-bold text-slate-600">{count}</span>}
                         </div>
                       ))}
+
                     </div>
                   )}
                 </div>
@@ -104,26 +110,28 @@ const MessageList: React.FC<MessageListProps> = ({ messages, onReply, onReact })
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                     </button>
-                    <div className="hidden group-hover/emojis:flex absolute bottom-full mb-2 bg-white shadow-xl border rounded-full p-1 gap-1 z-50">
+                    <div className="hidden group-hover/emojis:flex absolute bottom-full mb-2 bg-white/95 backdrop-blur-sm shadow-xl border border-slate-100 rounded-full p-1 gap-0.5 z-50 animate-slide-up">
                       {COMMON_EMOJIS.map(emoji => (
                         <button
                           key={emoji}
                           onClick={() => onReact(msg._id || msg.id, emoji)}
-                          className="hover:scale-125 transition-transform p-1 text-lg"
+                          className="hover:scale-125 transition-transform p-1.5 text-xl active:scale-95"
                         >
                           {emoji}
                         </button>
                       ))}
                     </div>
+
                   </div>
                 </div>
               </div>
 
               {index === messages.length - 1 && (
-                <span className="text-[10px] text-gray-400 mt-1 mx-1">
+                <span className="text-[9px] font-medium text-slate-400 mt-1.5 mx-1 uppercase tracking-tighter">
                   {formatTime(msg.timestamp)}
                 </span>
               )}
+
             </div>
           );
         })

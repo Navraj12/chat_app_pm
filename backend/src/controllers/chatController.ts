@@ -1,8 +1,10 @@
 import type { Response } from 'express';
+import mongoose from 'mongoose';
 import Message from '../models/message';
 import Conversation from '../models/Conversation';
 import User from '../models/user';
 import type { AuthRequest } from '../middleware/authMiddleware';
+
 
 // Fetch all conversations for the logged-in user
 export const getConversations = async (req: AuthRequest, res: Response) => {
@@ -89,5 +91,51 @@ export const getChatStats = async (req: AuthRequest, res: Response) => {
     });
   } catch (error: any) {
     res.status(500).json({ message: error.message || 'Server error' });
+  }
+};
+
+// Create a new group conversation
+export const createGroup = async (req: AuthRequest, res: Response) => {
+  try {
+    const { name, participants } = req.body;
+    const userId = req.user?.id;
+
+    console.log("Creating group:", { name, participants, userId });
+
+    if (!name || !participants || !Array.isArray(participants) || participants.length < 1) {
+      return res.status(400).json({ message: 'Group name and at least one participant are required' });
+    }
+
+    if (!userId) {
+      return res.status(401).json({ message: 'User not authenticated' });
+    }
+
+    // Add the creator to participants if not already included
+    // Convert strings to ObjectIds for consistency
+    const participantIds = participants.map(id => new mongoose.Types.ObjectId(id));
+    const creatorId = new mongoose.Types.ObjectId(userId);
+
+    // Check if creatorId is already in participantIds
+    const allParticipantIds = participantIds.some(pid => pid.equals(creatorId))
+      ? participantIds
+      : [...participantIds, creatorId];
+
+    const conversation = await Conversation.create({
+      name,
+      participants: allParticipantIds,
+      type: 'group'
+    });
+
+    const populatedConversation = await Conversation.findById(conversation._id)
+      .populate('participants', 'username email');
+
+    console.log("Group created successfully:", populatedConversation?._id);
+    res.status(201).json(populatedConversation);
+  } catch (error: any) {
+    console.error("Group creation error:", error);
+    res.status(500).json({
+      message: error.message || 'Server error',
+      details: error.name === 'ValidationError' ? error.errors : undefined
+    });
   }
 };

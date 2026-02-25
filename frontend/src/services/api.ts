@@ -18,6 +18,8 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+
+
 export const authAPI = {
   register: async (username: string, email: string, password: string) => {
     const response = await api.post('/api/auth/register', { username, email, password });
@@ -40,6 +42,11 @@ export const chatAPI = {
     const response = await api.post('/api/chat', { participantId });
     return response.data;
   },
+  createGroup: async (name: string, participants: string[]): Promise<Conversation> => {
+    const response = await api.post('/api/chat/group', { name, participants });
+    return response.data;
+  },
+
 
   getMessages: async (conversationId: string, limit: number = 50): Promise<{ messages: Message[] }> => {
     const response = await api.get(`/api/chat/messages/${conversationId}?limit=${limit}`);

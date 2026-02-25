@@ -30,6 +30,8 @@ export interface Conversation {
   id?: string;
   participants: User[];
   type: 'private' | 'group';
+  name?: string;
+
   lastMessage?: {
     text: string;
     sender: string;

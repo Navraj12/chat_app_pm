@@ -177,10 +177,11 @@ const Chat: React.FC = () => {
   };
 
   const partner = getPartner();
-  const partnerName = partner?.username || "Chat";
+  const partnerName = (activeConversation?.type === 'group') ? activeConversation.name : (partner?.username || "Chat");
+
 
   return (
-    <div className="flex h-screen bg-gray-100 overflow-hidden">
+    <div className="flex h-screen bg-surface overflow-hidden">
       <Sidebar
         onSelectConversation={setActiveConversation}
         activeConversationId={activeConversation?._id}
@@ -188,50 +189,61 @@ const Chat: React.FC = () => {
         userCount={userCount}
       />
 
-      <div className="flex-1 flex flex-col bg-white">
-        <div className="bg-blue-600 text-white p-4 shadow-lg flex items-center justify-between z-10">
+      <div className="flex-1 flex flex-col bg-surface">
+        <div className="bg-white/30 backdrop-blur-lg border-b border-white/20 p-4 flex items-center justify-between z-10">
           <div className="flex items-center gap-4">
+
             {activeConversation && (
               <button
                 onClick={() => setActiveConversation(null)}
-                className="mr-2 p-1 hover:bg-blue-500 rounded-full transition-colors flex items-center justify-center"
+                className="mr-2 p-1.5 hover:bg-slate-100 rounded-full transition-colors flex items-center justify-center text-slate-600"
                 title="Go back"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
               </button>
             )}
-            {activeConversation && partner && (
-              <div className="w-10 h-10 bg-white text-blue-600 rounded-full flex items-center justify-center font-bold shadow-sm">
-                {partner.username[0].toUpperCase()}
+            {activeConversation && (
+              <div className="w-10 h-10 bg-brand text-white rounded-full flex items-center justify-center font-bold shadow-sm">
+                {activeConversation.type === 'group' ? (
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                  </svg>
+                ) : (
+                  partner?.username?.[0].toUpperCase() || "?"
+                )}
               </div>
             )}
+
             <div>
-              <h1 className="text-xl font-bold truncate max-w-[150px] sm:max-w-xs">
+              <h1 className="text-xl font-bold truncate max-w-[150px] sm:max-w-xs text-slate-800">
                 {activeConversation ? partnerName : "Messenger"}
               </h1>
             </div>
+
           </div>
           <div className="flex items-center gap-2">
             {!isConnected && (
               <button
                 onClick={() => window.location.reload()}
-                className="text-xs bg-blue-500 hover:bg-blue-400 px-2 py-1 rounded"
+                className="text-xs bg-brand text-white hover:bg-brand-hover px-3 py-1.5 rounded-lg font-medium shadow-sm transition-all"
               >
                 Reconnect
               </button>
             )}
             <button
               onClick={logout}
-              className="px-4 py-2 bg-red-500 hover:bg-red-600 rounded-lg transition duration-200 text-sm font-semibold"
+              className="px-4 py-2 bg-slate-100 text-slate-600 hover:bg-red-50 hover:text-red-600 rounded-lg transition-all text-sm font-semibold"
             >
               Logout
             </button>
+
           </div>
         </div>
 
-        <div className="flex-1 flex flex-col min-h-0 bg-[#f0f2f5]">
+        <div className="flex-1 flex flex-col min-h-0">
+
           {activeConversation ? (
             <>
               <MessageList
@@ -245,18 +257,19 @@ const Chat: React.FC = () => {
                 </div>
               )}
               {replyingTo && (
-                <div className="px-6 py-2 bg-gray-100 border-t flex justify-between items-center animate-slide-up">
+                <div className="px-6 py-2 bg-slate-50 border-t flex justify-between items-center animate-slide-up">
                   <div className="flex flex-col">
-                    <span className="text-xs font-bold text-blue-600">Replying to {replyingTo.username}</span>
-                    <span className="text-sm text-gray-600 truncate max-w-md">{replyingTo.message}</span>
+                    <span className="text-xs font-bold text-brand">Replying to {replyingTo.username}</span>
+                    <span className="text-sm text-slate-600 truncate max-w-md">{replyingTo.message}</span>
                   </div>
-                  <button onClick={() => setReplyingTo(null)} className="p-1 hover:bg-gray-200 rounded-full">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <button onClick={() => setReplyingTo(null)} className="p-1 hover:bg-slate-200 rounded-full transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </button>
                 </div>
               )}
+
               {!isConnected && (
                 <div className="px-6 py-1 bg-yellow-100 text-yellow-800 text-xs text-center border-t border-yellow-200">
                   You are currently offline. Messages may not be sent.
