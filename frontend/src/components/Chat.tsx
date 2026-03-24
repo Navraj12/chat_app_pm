@@ -20,6 +20,7 @@ const Chat: React.FC = () => {
   const [replyingTo, setReplyingTo] = useState<Message | null>(null);
 
   const socketRef = useRef<Socket | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const typingTimeoutRef = useRef<any>(null);
 
   // Use refs for state used in event listeners to avoid closure traps
@@ -78,6 +79,7 @@ const Chat: React.FC = () => {
       }
     });
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     socket.on("reaction_update", (data: { messageId: string, reactions: any[] }) => {
       setMessages(prev => prev.map(msg =>
         (msg._id === data.messageId || msg.id === data.messageId)
@@ -266,7 +268,7 @@ const Chat: React.FC = () => {
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                     </svg>
-                  </button>
+                  Button </button>
                 </div>
               )}
 
