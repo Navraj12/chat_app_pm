@@ -40,7 +40,7 @@ A full-stack real-time chat application built with Node.js, Express, MongoDB, So
 - Socket.IO Client
 - Axios
 - Vite
-
+  
 ##  Project Structure
 
 <div style="display: flex; gap: 20px; justify-content: center;">
